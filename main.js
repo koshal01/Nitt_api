@@ -120,9 +120,10 @@ $(function() {
         });
     })
 
-    $('#roll-form').on('change', function(event) {
+    $('#roll-form').on('input', function(event) {
         event.preventDefault();
-        
+    
+        var a;
         var roll = $('#search-by-roll').val();
 
         $.ajax({
@@ -131,26 +132,44 @@ $(function() {
             contentType: 'application/json',
 
             success: (res) => {
-                console.log(res);
-                var tbody = $('#search-roll-body');
-                tbody.html('');
+                a = $("#showroll")
+                a.html('');
 
                 res.search.forEach(student => {
-                    tbody.append(`
-                        <tr>
-                            <td class="id">${student.id}</td>
-                            <td>${student.roll}</td>
-                            <td>${student.name}</td>
-                            <td>${student.dept}</td>
-                        </tr>
+                    a.append(`
+                        <button class="selectroll">${student.roll}</button><br>
                     `)
+                })
+
+                $('.selectroll').on('click', function(){
+                    var roll = $(this).html();
+                    
+                    $.ajax({
+                        url: '/searchbyroll/' + roll,
+                        method: 'GET',
+                        contentType: 'application/json',
+            
+                        success: function(res) {
+                            var tbody = $('#search-roll-body');
+                            tbody.html(`
+                                <tr>
+                                    <td class="id">${res.student.id}</td>
+                                    <td>${res.student.roll}</td>
+                                    <td>${res.student.name}</td>
+                                    <td>${res.student.dept}</td>
+                                </tr>
+                            `)
+                        }
+                    });    
                 })
             }
         });
     })
 
     //search student by name
-    $('#name-form').on('submit', function() {
+    $('#name-form').on('submit', function(event) {
+        event.preventDefault();
+
         var name = $('#search-by-name').val();
 
         $.ajax({
@@ -173,8 +192,11 @@ $(function() {
         });
     });
 
-    $('#name-form').on('change', function() {
-        var name = $('#search-by-name').val();
+    $('#name-form').on('input', function(event) {
+        event.preventDefault();
+
+        var name = $('#search-by-name').val();      
+        var b;
 
         $.ajax({
             url: '/specificname/' + name,
@@ -182,19 +204,35 @@ $(function() {
             contentType: 'application/json',
 
             success: (res) => {
-                console.log(res);
-                var tbody = $('#search-name-body');
-                tbody.html('');
+                b = $("#showname")
+                b.html('');
 
                 res.search.forEach(student => {
-                    tbody.append(`
-                        <tr>
-                            <td class="id">${student.id}</td>
-                            <td>${student.roll}</td>
-                            <td>${student.name}</td>
-                            <td>${student.dept}</td>
-                        </tr>
+                    b.append(`
+                        <button class="selectname">${student.name}</button><br>
                     `)
+                })
+
+                $('.selectname').on('click', function(){
+                    var name = $(this).html();
+                    console.log(name);
+                    $.ajax({
+                        url: '/searchbyname/' + name,
+                        method: 'GET',
+                        contentType: 'application/json',
+            
+                        success: function(res) {
+                            var tbody = $('#search-name-body');
+                            tbody.html(`
+                                <tr>
+                                    <td class="id">${res.student.id}</td>
+                                    <td>${res.student.roll}</td>
+                                    <td>${res.student.name}</td>
+                                    <td>${res.student.dept}</td>
+                                </tr>
+                            `)
+                        }
+                    });    
                 })
             }
         });

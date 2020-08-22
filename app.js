@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { RSA_NO_PADDING } = require('constants');
-const { exit } = require('process');
 const app = express();
 
 var students = [
